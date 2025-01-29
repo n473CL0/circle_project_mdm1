@@ -114,7 +114,6 @@ def hexagonal(d_1, d_2, s):
     '''
     Disks are aranged within a hexagon grid, just the right size to fit a d_1 circle
     -> hexagon side length: 2/sqrt(3) * d_1
-    Repeating width: 2 * d_1
     '''
 
     if (d_1 == 'name'):
@@ -147,3 +146,40 @@ def hexagonal(d_1, d_2, s):
     
     return disks
     
+def hexagonal_rotated(d_1, d_2, s):
+    '''
+    Disks are aranged within a hexagon grid, just the right size to fit a d_1 circle
+    -> hexagon side length: 2/sqrt(3) * d_1
+    '''
+
+    if (d_1 == 'name'):
+        return 'hexagonal_rotated'
+    
+    disks = []
+
+    r_1 = d_1 / 2
+
+    x_end = s.length - (s.length % (1.5 * r_1)) + r_1
+    y_end = s.height - (s.height % (1.5 * r_1)) + r_1
+
+    disk_no = 0
+    
+    
+
+    for i in np.arange(start=r_1, stop=x_end, step=d_1):
+        left = True
+        j = r_1
+        while j < y_end - r_1:
+            if left:
+                x = i
+            else:
+                x = i + r_1
+            if disk_no % 3 == 0:            
+                disks.append(Circle(x, j, d_1))
+            else:
+                disks.append(Circle(x, j, d_2))
+            j += 1.73205 * r_1
+            disk_no += 1
+            left = not left
+    
+    return disks
