@@ -23,8 +23,8 @@ def named_model(name):
 if __name__ == '__main__':
 
     arrangement = 'hexagonal_rotated'
-    resolution = 10
-    
+    resolution = 5
+
     df = test.test_general_arrangement(
         named_model(arrangement), 
         resolution, 
@@ -32,3 +32,4 @@ if __name__ == '__main__':
     )
 
     df.to_csv(f"data/{arrangement}_{resolution}.csv")
+    

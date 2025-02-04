@@ -57,38 +57,7 @@ def test_general_arrangement(arrangement, resolution, precision=2, sheet_width=1
 
             if d_1 >= d_2:
                 test = test_specific_arrangement(arrangement, d_1, d_2, sheet_width, precision)
-                fraction_waste = test.waste()
-                data[i, j] = fraction_waste
-                data[j, i] = fraction_waste
-
-                if save_figures:
-                    test.save_fig_section(f"figures/{arrangement('name', None, None)}/{d_1}_{d_2}.png", 300)
-
-        print(f"Row {i} complete")
-
-    df = pd.DataFrame(data, columns=columns, index=rows)
-
-    return df
-
-def test_general_arrangement_log(arrangement, resolution, precision=2, sheet_width=100, save_figures=False):
-    '''
-    Tests an arrangement function for a range of pairs of diameters
-    '''
-    columns = np.logspace(-1*resolution, 1, num=100, base=10)
-    rows = np.logspace(-1*resolution, 1, num=100, base=10)
-    data = np.zeros((100 // resolution, 100 // resolution))
-
-    for i in np.logspace(-1*resolution, 1, num=100, base=10):
-        
-        d_1 = i
-        
-        for j in np.logspace(-1*resolution, 1, num=100, base=10):
-            
-            d_2 = j
-
-            if d_1 >= d_2:
-                test = test_specific_arrangement(arrangement, d_1, d_2, sheet_width, precision)
-                fraction_waste = test.waste()
+                fraction_waste = round(test.waste(), precision)
                 data[i, j] = fraction_waste
                 data[j, i] = fraction_waste
 

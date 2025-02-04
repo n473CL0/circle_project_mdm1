@@ -72,10 +72,13 @@ class System():
 
     def save_fig_section(self, filename, x_end):
         plt.axes()
+        self.sheet.draw()
         for circle in self.circles:
             if circle.x > x_end:
                 break
             circle.draw()
-        plt.axis('scaled')
+        plt.ylim(-10, 110)
+        plt.xlim(-10, 300)
+        plt.gca().set_aspect('equal', adjustable='box')
         plt.savefig(filename)
         plt.clf()
