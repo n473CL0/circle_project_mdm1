@@ -16,20 +16,38 @@ def named_model(name):
         return arrangers.hexagonal
     if name == 'hexagonal_rotated':
         return arrangers.hexagonal_rotated
+    if name == 'square_spiral':
+        return arrangers.square_spiral
     else:
         sys.exit(f"Model {name} not found.")
 
 
-if __name__ == '__main__':
-
-    arrangement = 'hexagonal_rotated'
-    resolution = 5
+def test_arrangment(arrangement_name, resolution, save_figures=False):
 
     df = test.test_general_arrangement(
-        named_model(arrangement), 
+        named_model(arrangement_name), 
         resolution, 
-        save_figures=True
+        save_figures=save_figures
     )
 
-    df.to_csv(f"data/{arrangement}_{resolution}.csv")
+    df.to_csv(f"data/{arrangement_name}_{resolution}.csv")
+
+
+if __name__ == '__main__':
+
+    '''
+    methods = [
+            'square_simple',
+            'square_vertical',
+            'hexagonal',
+            'hexagonal_rotated'
+        ]
+
+    for m in methods:
+        test_arrangment(m, 1)
+    '''
+   
+
+    # test.test_overall("data/*.csv")
+    test.plot_data('min_waste_values.csv', 'figures/overall/heatmap.png')
     

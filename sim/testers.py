@@ -1,5 +1,8 @@
 import numpy as np
 import pandas as pd
+import glob
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from models import Sheet, System
 
@@ -28,14 +31,14 @@ def test_specific_arrangement(arrangement, d_1, d_2, sheet_width, precision, wri
 
         sample = system.waste()
         if write_to_terminal:
-            print(f"Length: {size}, Wate: {round(sample, precision)}")
+            print(f"Length: {size}, Waste: {round(sample, precision)}")
 
         size *= 10
 
     n_1, n_2 = system.count(d_1, d_2)
 
     if write_to_terminal:
-        print(f"Test complete: waste = {round(sample, 3)}, ratio = {round(n_1 / n_2, 2)}")
+        print(f"Test complete: waste = {round(sample, precision)}, ratio = {round(n_1 / n_2, 2)}")
 
     return system
 
@@ -64,8 +67,52 @@ def test_general_arrangement(arrangement, resolution, precision=2, sheet_width=1
                 if save_figures:
                     test.save_fig_section(f"figures/{arrangement('name', None, None)}/{d_1}_{d_2}.png", 300)
 
-        print(f"Row {i} complete")
+        print(f"Row {i+1} complete")
 
     df = pd.DataFrame(data, columns=columns, index=rows)
 
     return df
+
+def test_overall(file_pattern):
+
+    # Path to data files (adjust the pattern as needed)
+    file_list = glob.glob(file_pattern)
+
+    # List to store dataframes
+    dfs = []
+
+    # Read all files into dataframes
+    for file in file_list:
+        df = pd.read_csv(file, index_col=0)  # Assuming first column and first row contain indices
+        dfs.append(df)
+
+    # Ensure all DataFrames have the same structure
+    base_df = dfs[0]
+    for df in dfs:
+        df = df.reindex(index=base_df.index, columns=base_df.columns)
+
+    # Compute the element-wise minimum across all DataFrames
+    min_df = pd.concat(dfs).groupby(level=0).min()
+
+    # Save the resulting DataFrame
+    min_df.to_csv("min_waste_values.csv")
+
+    print("Processed", len(file_list), "files. Minimum values saved to min_waste_values.csv")
+
+def plot_data(read_from, save_to):
+    # Load the minimum waste values file
+    min_df = pd.read_csv(read_from, index_col=0)
+
+    # Set up the figure size
+    plt.figure(figsize=(10, 8))
+
+    # Create the heatmap
+    sns.heatmap(min_df, annot=False, fmt=".2f", cmap="coolwarm")
+
+    # Add titles and labels
+    plt.title("Minimum Waste Percentage Heatmap")
+    plt.xlabel("d1 /cm")
+    plt.ylabel("d2 /cm")
+
+    # Save the plot
+    plt.savefig(save_to)
