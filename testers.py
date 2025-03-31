@@ -73,7 +73,7 @@ def test_general_arrangement(arrangement, resolution, precision=2, sheet_width=1
 
     return df
 
-def test_overall(file_pattern):
+def test_overall(file_pattern, file_to):
 
     # Path to data files (adjust the pattern as needed)
     file_list = glob.glob(file_pattern)
@@ -95,9 +95,9 @@ def test_overall(file_pattern):
     min_df = pd.concat(dfs).groupby(level=0).min()
 
     # Save the resulting DataFrame
-    min_df.to_csv("min_waste_values.csv")
+    min_df.to_csv(file_to)
 
-    print("Processed", len(file_list), "files. Minimum values saved to min_waste_values.csv")
+    print("Processed", len(file_list), f"files. Minimum values saved to {file_to}")
 
 def plot_data(read_from, save_to):
     # Load the minimum waste values file
